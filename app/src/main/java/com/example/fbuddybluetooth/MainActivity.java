@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 0;
     private static final int REQUEST_DISCOVER_BT = 1;
     private Set<BluetoothDevice> devices;
+    ImageView mblueiv;
     TextView mstatus, pairedtv;
     Button monbtn;
     Button moffbtn;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mblueiv = findViewById(R.id.bluepic);
         mstatus = findViewById(R.id.status);
         monbtn = findViewById(R.id.onbtn);
         moffbtn = findViewById(R.id.offbtn);
@@ -46,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
             mstatus.setText("BLUETOOTH NOT AVAILABLE");
         } else {
             mstatus.setText("BLUETOOTH  AVAILABLE");
+        }
+
+        if(mblueadapter.isEnabled()){
+            mblueiv.setImageResource(R.drawable.bluetooth_on);
+        }
+        else{
+            mblueiv.setImageResource(R.drawable.bluetooth_off);
         }
         monbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         mblueadapter.disable();
                         showToast("TURNING OFF BLUETOOTH");
+                        mblueiv.setImageResource(R.drawable.bluetooth_off);
                         return;
                     }
                     else {
@@ -123,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         if(resultcode==RESULT_OK){
             //bluetooth is on
             showToast("Bluetooth is on");
+            mblueiv.setImageResource(R.drawable.bluetooth_on);
         }
         else{
             //user denied to turn on bluetooth
