@@ -1,0 +1,40 @@
+/** The discovered devices. */
+      private HashMap<String, String> discoveredDevices;
+      private HashMap<String, String> discoveredDevicesRSSI;//<---
+...    
+      discoveredDevices = new HashMap<String, String>();
+      discoveredDevicesRSSI = new HashMap<String, String>();//<---
+...    
+      public void discoverDevices() {
+        discoveredDevices.clear();
+        discoveredDevicesRSSI.clear();//<---
+...    
+      public void cancelDiscovery() {
+        if (bluetoothAdapter.isDiscovering()) bluetoothAdapter.cancelDiscovery();
+        discoveredDevices.clear();
+        discoveredDevicesRSSI.clear();//<---
+...    
+      /** The m receiver. */
+      private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+          String action = intent.getAction();
+          if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);//<---
+            if (device != null) {
+              discoveredDevices.put(device.getName(), device.getAddress());
+              discoveredDevicesRSSI.put(device.getName(), String.valueOf(rssi));//<---
+            }
+          }
+        }
+      };
+
+        //a function to get RSSI by device Name:
+
+  public String getRSSIByName(String _name) {
+    String rssi = "";
+    if (discoveredDevicesRSSI.containsKey(_name)) {
+      rssi = discoveredDevicesRSSI.get(_name);
+    }
+    return rssi;
+  }
